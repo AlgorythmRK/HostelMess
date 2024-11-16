@@ -211,7 +211,7 @@
                 setTimeout(function() {
                     // If the payment app is not opened (i.e., the user is still on the page), show an alert or fallback
                     alert("Please make sure your UPI app is installed and try again.");
-                }, 3000);  // 3-second timeout for UPI app launch
+                }, 10000);  // 10-second timeout for UPI app launch
             };
 
             function closeModal() {
