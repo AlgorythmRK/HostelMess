@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Mess Menu</title>
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e9f5ff;
+        }
+        header {
+            background-color: #53973d;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            margin: 0;
+            font-size: 3em;
+        }
+        .menu-section, .footer, .view-menu-section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .meal-option {
+            border: 1px solid #007acc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            font-size: 1.5em;
+        }
+        .payment-btn {
+            background-color: #1f4cee;
+            color: #eceeef;
+            padding: 20px 40px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .payment-btn:hover {
+            background-color: #005999;
+        }
+        .center-btn {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        /* Modal Styling */
+        .modal, .menu-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 90%;
+        }
+        .modal p {
+            font-size: 1.5em;
+        }
+        .close-btn {
+            margin-top: 15px;
+            background-color: #005999;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        /* View Menu Icon */
+        .view-menu {
+            text-align: center;
+            margin-top: 30px;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #005999;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hostel Mess Menu</h1>
+        <p>Date: <span id="current-date"></span></p>
+    </header>
+
+    <main>
+        <!-- Weekly Mess Menu View -->
+        <div class="view-menu-section">
+            <div class="view-menu" onclick="showMenu()">
+                📅 This Week's Mess Menu
+            </div>
+        </div>
+
+        <!-- Mess Menu Modal -->
+        <div class="menu-modal" id="menu-modal">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Breakfast</th>
+                        <th>Lunch</th>
+                        <th>Snacks</th>
+                        <th>Dinner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monday<br>28.10.2024</td>
+                        <td>Masala Upma, Sheera, Khara, Tea</td>
+                        <td>White Rice, Dal Methi, Rajgira Sambar, Turiya Yangai, Udarbele Paliya, Chapati, Curd, Juka Vadi</td>
+                        <td>Girmitt, Tea Coffee</td>
+                        <td>White Rice, Majjige Sar, Veg Kolhapuri, Soyabean Chilly Dry, Chapati, Banana</td>
+                    </tr>
+                    <!-- More Menu Rows -->
+                </tbody>
+            </table>
+            <button class="close-btn" onclick="closeMenu()">Close</button>
+        </div>
+
+        <section class="menu-section">
+            <h2>Select Your Meal</h2>
+            <div class="meal-option">
+                <input type="radio" id="breakfast" name="meal" value="30">
+                <label for="breakfast">Breakfast - ₹30</label>
+            </div>
+            <div class="meal-option">
+                <input type="radio" id="lunch" name="meal" value="50">
+                <label for="lunch">Lunch - ₹50</label>
+            </div>
+            <div class="meal-option">
+                <input type="radio" id="dinner" name="meal" value="45">
+                <label for="dinner">Dinner - ₹45</label>
+            </div>
+        </section>
+
+        <!-- Centered Payment Button -->
+        <div class="center-btn" id="pay-section">
+            <button class="payment-btn" id="pay-now-btn">Pay Now</button>
+        </div>
+
+        <!-- Modal for Payment Confirmation -->
+        <div class="modal" id="confirmation-modal">
+            <p>Payment successful! Thank you for your order.</p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+
+        <script>
+            var amount = 0;
+
+            document.querySelectorAll('input[name="meal"]').forEach((meal) => {
+                meal.addEventListener('change', function() {
+                    amount = this.value;
+                    document.getElementById('pay-section').style.display = 'block';
+                    document.getElementById('pay-now-btn').textContent = `Pay ₹${this.value}`;
+                });
+            });
+
+            // UPI Payment link setup
+            document.getElementById('pay-now-btn').onclick = function() {
+                var upiID = '6361817649@ybl';  // Replace with your UPI ID
+                var txnAmount = amount;  // Amount selected by user
+                var txnNote = 'Hostel Mess Meal Payment';
+                var upiUrl = `upi://pay?pa=${upiID}&pn=Hostel%20Mess&mc=1234&tid=0000000012345678&amount=${txnAmount}&txnRef=REF1234567890&purpose=${txnNote}`;
+
+                // Try to open the UPI app by setting the window location
+                window.location.href = upiUrl;
+
+                // Timeout to ensure the redirection works on mobile devices
+                setTimeout(function() {
+                    // If the payment app is not opened (i.e., the user is still on the page), show an alert or fallback
+                    alert("Please make sure your UPI app is installed and try again.");
+                }, 3000);  // 3-second timeout for UPI app launch
+            };
+
+            function closeModal() {
+                document.getElementById('confirmation-modal').style.display = 'none';
+            }
+
+            // Display Weekly Mess Menu
+            function showMenu() {
+                document.getElementById('menu-modal').style.display = 'block';
+            }
+            function closeMenu() {
+                document.getElementById('menu-modal').style.display = 'none';
+            }
+
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString();
+        </script>
+    </main>
+</body>
+</html>
